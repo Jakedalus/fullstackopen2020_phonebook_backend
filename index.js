@@ -1,34 +1,44 @@
-const http = require('http');
+const express = require('express');
+const app = express();
 
-let notes = [
+const PORT = 3001;
+
+let persons = [
 	{
-		id        : 1,
-		content   : 'HTML is easy',
-		date      : '2019-05-30T17:30:31.098Z',
-		important : true
+		name   : 'Arto Hellas',
+		number : '040-123456',
+		id     : 1
 	},
 	{
-		id        : 2,
-		content   : 'Browser can execute only Javascript',
-		date      : '2019-05-30T18:39:34.091Z',
-		important : false
+		name   : 'Ada Lovelace',
+		number : '39-44-5323523',
+		id     : 2
 	},
 	{
-		id        : 3,
-		content   :
-			'GET and POST are the most important methods of HTTP protocol',
-		date      : '2019-05-30T19:20:14.298Z',
-		important : true
+		name   : 'Dan Abramov',
+		number : '12-43-234345',
+		id     : 3
+	},
+	{
+		name   : 'Mary Poppendieck',
+		number : '39-23-6423122',
+		id     : 4
+	},
+	{
+		number : '777',
+		name   : 'Jake',
+		id     : 5
 	}
 ];
 
-const app = http.createServer((req, res) => {
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
-	res.end(JSON.stringify(notes));
+app.get('/', (req, res) => {
+	res.send('<h1>Sup</h1>');
 });
 
-const PORT = 3001;
-app.listen(PORT);
-console.log(`Server is running on port ${PORT}`);
+app.get('/api/persons', (req, res) => {
+	res.json(persons);
+});
+
+app.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}`);
+});
