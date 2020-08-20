@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+const moment = require('moment-timezone');
+
 const PORT = 3001;
 
 let persons = [
@@ -33,6 +35,17 @@ let persons = [
 
 app.get('/', (req, res) => {
 	res.send('<h1>Sup</h1>');
+});
+
+app.get('/info', (req, res) => {
+	res.send(
+		`
+    <p>Phonebook has info for ${persons.length} people</p>
+    <p>${moment().format(
+			'ddd MMM DD YYYY hh:mm:ss A Z'
+		)} (${moment.tz.guess()})</p>
+    `
+	);
 });
 
 app.get('/api/persons', (req, res) => {
