@@ -60,9 +60,30 @@ app.post('/api/persons', (req, res) => {
 	const entry = req.body;
 	console.log('New Entry:', entry);
 
+	if (!entry.name || !entry.number) {
+		res.status(400).json({
+			error : 'must include name and number'
+		});
+	}
+
+	const existsAlready = persons
+		.map(person => person.name)
+		.includes(entry.name);
+
+	console.log('persons:', persons);
+	console.log('existsAlready:', existsAlready);
+
+	if (existsAlready) {
+		res.status(400).json({
+			error : 'name must be unique'
+		});
+	}
+
 	entry.id = Math.floor(
 		Math.random() * Math.floor(1000000)
 	);
+
+	console.log(('Add id to new entry:', entry));
 
 	persons = persons.concat(entry);
 
