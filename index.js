@@ -60,6 +60,14 @@ app.get('/api/persons/:id', (req, res) => {
 	res.json(person);
 });
 
+app.delete('/api/persons/:id', (req, res) => {
+	console.log('DELETE:', req.params);
+	persons = persons.filter(
+		person => person.id != req.params.id
+	);
+	res.status(204).end();
+});
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
