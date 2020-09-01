@@ -52,6 +52,14 @@ app.get('/api/persons', (req, res) => {
 	res.json(persons);
 });
 
+app.get('/api/persons/:id', (req, res) => {
+	// console.log(req.params);
+	const person = persons.filter(
+		person => person.id == req.params.id
+	);
+	res.json(person);
+});
+
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
