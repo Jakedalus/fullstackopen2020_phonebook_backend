@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json());
+
 const moment = require('moment-timezone');
+const { response } = require('express');
 
 const PORT = 3001;
 
@@ -50,6 +53,20 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons', (req, res) => {
 	res.json(persons);
+});
+
+app.post('/api/persons', (req, res) => {
+	console.log('POST');
+	const entry = req.body;
+	console.log('New Entry:', entry);
+
+	entry.id = Math.floor(
+		Math.random() * Math.floor(1000000)
+	);
+
+	persons = persons.concat(entry);
+
+	res.json(entry);
 });
 
 app.get('/api/persons/:id', (req, res) => {
