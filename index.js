@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
+const morgan = require('morgan');
 
 app.use(express.json());
+app.use(morgan('tiny'));
 
 const moment = require('moment-timezone');
 const { response } = require('express');
