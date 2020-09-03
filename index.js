@@ -61,7 +61,7 @@ app.post('/api/persons', (req, res) => {
 	console.log('New Entry:', entry);
 
 	if (!entry.name || !entry.number) {
-		res.status(400).json({
+		return res.status(400).json({
 			error : 'must include name and number'
 		});
 	}
@@ -74,7 +74,7 @@ app.post('/api/persons', (req, res) => {
 	console.log('existsAlready:', existsAlready);
 
 	if (existsAlready) {
-		res.status(400).json({
+		return res.status(400).json({
 			error : 'name must be unique'
 		});
 	}
@@ -83,7 +83,8 @@ app.post('/api/persons', (req, res) => {
 		Math.random() * Math.floor(1000000)
 	);
 
-	console.log(('Add id to new entry:', entry));
+	console.log('*** TEST ***');
+	console.log('Ad id to new entry:', entry);
 
 	persons = persons.concat(entry);
 
