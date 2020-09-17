@@ -68,6 +68,21 @@ app.get('/info', (req, res) => {
 	);
 });
 
+app.get('/api/persons/:id', (req, res) => {
+	// console.log(req.params);
+
+	// Old Way
+	// const person = persons.filter(
+	// 	person => person.id == req.params.id
+	// );
+	// res.json(person);
+
+	Person.findById(req.params.id).then(person => {
+		console.log('GET /api/persons/:id', person);
+		res.json(person);
+	});
+});
+
 app.get('/api/persons', (req, res) => {
 	console.log('GET /api/persons');
 	Person.find({})
@@ -128,14 +143,6 @@ app.post('/api/persons', (req, res) => {
 	// persons = persons.concat(entry);
 
 	// res.json(entry);
-});
-
-app.get('/api/persons/:id', (req, res) => {
-	// console.log(req.params);
-	const person = persons.filter(
-		person => person.id == req.params.id
-	);
-	res.json(person);
 });
 
 app.delete('/api/persons/:id', (req, res) => {
