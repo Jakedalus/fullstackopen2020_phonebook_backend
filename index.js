@@ -1,7 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
+
+const Person = require('./models/person');
 
 app.use(express.json());
 app.use(cors());
@@ -20,35 +23,35 @@ morgan.token('body', function(req, res) {
 const moment = require('moment-timezone');
 const { response } = require('express');
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
-let persons = [
-	{
-		name   : 'Arto Hellas',
-		number : '040-123456',
-		id     : 1
-	},
-	{
-		name   : 'Ada Lovelace',
-		number : '39-44-5323523',
-		id     : 2
-	},
-	{
-		name   : 'Dan Abramov',
-		number : '12-43-234345',
-		id     : 3
-	},
-	{
-		name   : 'Mary Poppendieck',
-		number : '39-23-6423122',
-		id     : 4
-	},
-	{
-		number : '777',
-		name   : 'Jake',
-		id     : 5
-	}
-];
+// let persons = [
+// 	{
+// 		name   : 'Arto Hellas',
+// 		number : '040-123456',
+// 		id     : 1
+// 	},
+// 	{
+// 		name   : 'Ada Lovelace',
+// 		number : '39-44-5323523',
+// 		id     : 2
+// 	},
+// 	{
+// 		name   : 'Dan Abramov',
+// 		number : '12-43-234345',
+// 		id     : 3
+// 	},
+// 	{
+// 		name   : 'Mary Poppendieck',
+// 		number : '39-23-6423122',
+// 		id     : 4
+// 	},
+// 	{
+// 		number : '777',
+// 		name   : 'Jake',
+// 		id     : 5
+// 	}
+// ];
 
 app.get('/', (req, res) => {
 	res.send('<h1>Sup</h1>');
@@ -67,7 +70,13 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons', (req, res) => {
 	console.log('GET /api/persons');
-	res.json(persons);
+	Person.find({})
+		.then(persons => {
+			res.json(persons);
+		})
+		.catch(error => {
+			res.json({ error });
+		});
 });
 
 app.post('/api/persons', (req, res) => {
@@ -75,35 +84,50 @@ app.post('/api/persons', (req, res) => {
 	const entry = req.body;
 	console.log('New Entry:', entry);
 
+	if (entry === undefined) {
+		return res
+			.status(400)
+			.json({ error: 'content missing' });
+	}
+
 	if (!entry.name || !entry.number) {
 		return res.status(400).json({
 			error : 'must include name and number'
 		});
 	}
 
-	const existsAlready = persons
-		.map(person => person.name)
-		.includes(entry.name);
+	// Check if entry exists already
+	// const existsAlready = persons
+	// 	.map(person => person.name)
+	// 	.includes(entry.name);
 
-	console.log('persons:', persons);
-	console.log('existsAlready:', existsAlready);
+	// console.log('persons:', persons);
+	// console.log('existsAlready:', existsAlready);
 
-	if (existsAlready) {
-		return res.status(400).json({
-			error : 'name must be unique'
-		});
-	}
+	// if (existsAlready) {
+	// 	return res.status(400).json({
+	// 		error : 'name must be unique'
+	// 	});
+	// }
 
-	entry.id = Math.floor(
-		Math.random() * Math.floor(1000000)
-	);
+	// entry.id = Math.floor(
+	// 	Math.random() * Math.floor(1000000)
+	// );
+	// console.log('*** TEST ***');
+	// console.log('Ad id to new entry:', entry);
 
-	console.log('*** TEST ***');
-	console.log('Ad id to new entry:', entry);
+	const person = new Person({
+		name   : entry.name,
+		number : entry.number
+	});
 
-	persons = persons.concat(entry);
+	person.save().then(savedPerson => {
+		res.json(savedPerson);
+	});
 
-	res.json(entry);
+	// persons = persons.concat(entry);
+
+	// res.json(entry);
 });
 
 app.get('/api/persons/:id', (req, res) => {
