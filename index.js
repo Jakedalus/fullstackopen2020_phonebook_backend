@@ -77,10 +77,19 @@ app.get('/api/persons/:id', (req, res) => {
 	// );
 	// res.json(person);
 
-	Person.findById(req.params.id).then(person => {
-		console.log('GET /api/persons/:id', person);
-		res.json(person);
-	});
+	Person.findById(req.params.id)
+		.then(person => {
+			console.log('GET /api/persons/:id', person);
+			if (person) {
+				res.json(person);
+			} else {
+				res.status(404).end();
+			}
+		})
+		.catch(error => {
+			console.log(error);
+			res.status(400).send({ error: 'malformed id' });
+		});
 });
 
 app.get('/api/persons', (req, res) => {
