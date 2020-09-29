@@ -140,9 +140,12 @@ app.post('/api/persons', (req, res, next) => {
 		number : entry.number
 	});
 
-	person.save().then(savedPerson => {
-		res.json(savedPerson);
-	});
+	person
+		.save()
+		.then(savedPerson => {
+			res.json(savedPerson);
+		})
+		.catch(error => next(error));
 
 	// persons = persons.concat(entry);
 
