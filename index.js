@@ -54,18 +54,22 @@ const PORT = process.env.PORT;
 // ];
 
 app.get('/', (req, res) => {
-	res.send('<h1>Sup</h1>');
+	res.redirect('/info');
 });
 
 app.get('/info', (req, res) => {
-	res.send(
-		`
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${moment().format(
-			'ddd MMM DD YYYY hh:mm:ss A Z'
-		)} (${moment.tz.guess()})</p>
-    `
-	);
+	Person.find({})
+		.then(persons => {
+			res.send(
+				`
+				<p>Phonebook has info for ${persons.length} people</p>
+				<p>${moment().format(
+					'ddd MMM DD YYYY hh:mm:ss A Z'
+				)} (${moment.tz.guess()})</p>
+				`
+			);
+		})
+		.catch(error => next(error));
 });
 
 app.get('/api/persons/:id', (req, res, next) => {
