@@ -68,7 +68,7 @@ app.get('/info', (req, res) => {
 	);
 });
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
 	// console.log(req.params);
 
 	// Old Way
@@ -86,24 +86,19 @@ app.get('/api/persons/:id', (req, res) => {
 				res.status(404).end();
 			}
 		})
-		.catch(error => {
-			console.log(error);
-			res.status(400).send({ error: 'malformed id' });
-		});
+		.catch(error => next(error));
 });
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
 	console.log('GET /api/persons');
 	Person.find({})
 		.then(persons => {
 			res.json(persons);
 		})
-		.catch(error => {
-			res.json({ error });
-		});
+		.catch(error => next(error));
 });
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
 	console.log('POST');
 	const entry = req.body;
 	console.log('New Entry:', entry);
@@ -154,7 +149,7 @@ app.post('/api/persons', (req, res) => {
 	// res.json(entry);
 });
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
 	console.log('DELETE:', req.params);
 
 	//// OLD WAY
@@ -166,8 +161,20 @@ app.delete('/api/persons/:id', (req, res) => {
 		.then(result => {
 			res.status(204).end();
 		})
-		.catch(error => console.log(error));
+		.catch(error => next(error));
 });
+
+const errorHandler = (error, req, res, next) => {
+	console.log(error.message);
+
+	if (error.name === 'CastError') {
+		return res.status(400).send({ error: 'malformed id' });
+	}
+
+	next(error);
+};
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
