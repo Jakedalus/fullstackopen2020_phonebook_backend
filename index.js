@@ -98,7 +98,7 @@ app.get('/api/persons', (req, res, next) => {
 		.catch(error => next(error));
 });
 
-app.post('/api/persons', (req, res, next) => {
+app.post('/api/persons', async (req, res, next) => {
 	console.log('POST');
 	const entry = req.body;
 	console.log('New Entry:', entry);
@@ -116,6 +116,7 @@ app.post('/api/persons', (req, res, next) => {
 	}
 
 	// Check if entry exists already
+	//// OLD WAY
 	// const existsAlready = persons
 	// 	.map(person => person.name)
 	// 	.includes(entry.name);
@@ -135,21 +136,48 @@ app.post('/api/persons', (req, res, next) => {
 	// console.log('*** TEST ***');
 	// console.log('Ad id to new entry:', entry);
 
-	const person = new Person({
-		name   : entry.name,
-		number : entry.number
+	//// Don't allow repeats
+	const alreadyExistingPerson = await Person.findOne({
+		name : entry.name
 	});
 
-	person
-		.save()
-		.then(savedPerson => {
-			res.json(savedPerson);
+	console.log(
+		'alreadyExistingPerson:',
+		alreadyExistingPerson
+	);
+
+	if (!alreadyExistingPerson) {
+		const person = new Person({
+			name   : entry.name,
+			number : entry.number
+		});
+
+		person
+			.save()
+			.then(savedPerson => {
+				res.json(savedPerson);
+			})
+			.catch(error => next(error));
+	} else {
+		res.status(500).send({ error: 'name already exists' });
+	}
+});
+
+app.put('/api/persons/:id', (req, res, next) => {
+	console.log('PUT:', req.params, req.body);
+
+	const updatedInfo = {
+		name   : req.body.name,
+		number : req.body.number
+	};
+
+	Person.findByIdAndUpdate(req.params.id, updatedInfo, {
+		new : true
+	})
+		.then(updatedNote => {
+			res.json(updatedNote);
 		})
 		.catch(error => next(error));
-
-	// persons = persons.concat(entry);
-
-	// res.json(entry);
 });
 
 app.delete('/api/persons/:id', (req, res, next) => {
