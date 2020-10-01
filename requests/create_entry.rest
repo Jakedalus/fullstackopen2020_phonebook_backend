@@ -2,7 +2,7 @@ POST http://localhost:3001/api/persons/
 Content-Type: application/json
 
 {
-  "name": "Test Name",
+  "name": "Te",
   "number": "TEST-NUMBER-00"
 }
 
@@ -11,5 +11,9 @@ Content-Type: application/json
 #   "number": "903823098109358"
 # }
 
-# ERROR
+### ERRORS
+
+## EMPTY
 # {}
+
+

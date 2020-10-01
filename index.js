@@ -196,14 +196,18 @@ app.delete('/api/persons/:id', (req, res, next) => {
 });
 
 const errorHandler = (error, req, res, next) => {
-	console.log(error.message);
+	console.log('errorHandler, error:', error);
+	console.log(
+		'errorHandler, error.message:',
+		error.message
+	);
+	console.log('errorHandler, error.name:', error.name);
 
 	if (error.name === 'CastError') {
 		return res.status(400).send({ error: 'malformed id' });
-	} else if (error.name === 'ValidationError') {
-		return res
-			.status(400)
-			.send({ error: 'name must be unique' });
+	}
+	if (error.name === 'ValidationError') {
+		return res.status(400).send({ error: error.message });
 	}
 
 	next(error);
