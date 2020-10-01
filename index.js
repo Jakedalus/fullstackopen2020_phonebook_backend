@@ -53,10 +53,6 @@ const PORT = process.env.PORT;
 // 	}
 // ];
 
-app.get('/', (req, res) => {
-	res.redirect('/info');
-});
-
 app.get('/info', (req, res) => {
 	Person.find({})
 		.then(persons => {
@@ -204,6 +200,10 @@ const errorHandler = (error, req, res, next) => {
 
 	if (error.name === 'CastError') {
 		return res.status(400).send({ error: 'malformed id' });
+	} else if (error.name === 'ValidationError') {
+		return res
+			.status(400)
+			.send({ error: 'name must be unique' });
 	}
 
 	next(error);
