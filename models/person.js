@@ -16,7 +16,7 @@ mongoose
 		useUnifiedTopology : true
 	})
 	.then(result => {
-		console.log('connected to MongoDB');
+		console.log('connected to MongoDB', result);
 	})
 	.catch(error => {
 		console.log(
@@ -27,10 +27,10 @@ mongoose
 
 const personSchema = new mongoose.Schema({
 	name   : {
-		type: String,
-		required: true,
-		unique: true,
-		minlength: 3
+		type      : String,
+		required  : true,
+		unique    : true,
+		minlength : 3
 	},
 	number : { type: String, required: true, minlength: 8 }
 });

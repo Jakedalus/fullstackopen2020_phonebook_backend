@@ -16,12 +16,12 @@ app.use(
 		':method :url :status :res[content-length] - :response-time ms :body'
 	)
 );
-morgan.token('body', function(req, res) {
+morgan.token('body', function(req) {
 	return JSON.stringify(req.body);
 });
 
 const moment = require('moment-timezone');
-const { response } = require('express');
+// const { response } = require('express');
 
 const PORT = process.env.PORT;
 
@@ -53,7 +53,7 @@ const PORT = process.env.PORT;
 // 	}
 // ];
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
 	Person.find({})
 		.then(persons => {
 			res.send(
@@ -192,6 +192,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 	Person.findByIdAndRemove(req.params.id)
 		.then(result => {
+			console.log(result);
 			res.status(204).end();
 		})
 		.catch(error => next(error));
