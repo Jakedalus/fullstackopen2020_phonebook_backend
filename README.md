@@ -1,8 +1,8 @@
 # phonebook_backend
 
-> one-liner description of the module
+> The backend portion of Full Stack Open's Part 3
 
-background details relevant to understanding what this module does
+Full Stack Open 2020 can be found here https://fullstackopen.com/
 
 ## Usage
 
